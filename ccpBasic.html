@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>Bold360 AI Basic Chat</title>
+</head>
+<body>
+<h1>Custom Chat Provider - Basic Chat</h1>
+<script type="text/javascript" src="conf.js"></script>
+<script>
+    //alert('BOLD360_AI_ACCOUNT is ' + BOLD360_AI_ACCOUNT);
+    //alert('BOLD360_AI_DOMAIN is ' + BOLD360_AI_DOMAIN);
+    //alert('BOLD360_AI_KBID is ' + BOLD360_AI_KBID);
+    //alert('BOLD360_AI_CONFIGID is ' + BOLD360_AI_CONFIGID);
+    //alert('BOLD360_AI_APIKEY is ' + BOLD360_AI_APIKEY);
+    //alert('BOLD360_AI_SUPPORT is ' + BOLD360_AI_SUPPORT);
+    var jsScript = "https://" + BOLD360_AI_ACCOUNT + "." + BOLD360_AI_DOMAIN + "/web/include.js?sdk=channeling-bar";
+    document.write('<scr'+'ipt type="text/javascript" src="' + jsScript + '"></scr'+'ipt>');
+</script>
+<p>Demonstrating the Custom Chat Provider, as a basic use of the nanorep.sdk, that has already been added to this web page.</p>
+<p>Please click CHAT WITH ME! below.</p>
+<div id="demo-basic" style="margin-top: 40px;"></div>
+<script>
+//ThirdPartyProviderName could be SkypeBusiness, FacebookMessenger, etc.
+nanorep.sdk.addChatProvider('ThirdPartyProviderName', {
+  getCapabilities: function() {
+	return {
+	  customUI: false,    // indicates provider support seamless chat integration
+	  vendorUI: true,     // indicates provider supports nativeUI within the page
+	  vendorPopup: false  // indicates provider can open chat in a new window
+	}
+  },
+  constructor: function(channel) {
+	// this function is called to initialize chat provider instance
+	console.log('init custom chat for: \n' + JSON.stringify(channel, null, '  '));
+
+	// emulate fake availability events
+	var self = this;
+	setInterval(function() {
+	  self.fakeAvailability = !self.fakeAvailability;
+	  self.emit('availabilityChanged', self.fakeAvailability);
+	}, 2000);
+  },
+  isAvailable: function(callback) {
+	// this method is used to report availability, executing the callback with the true parameter indicates the chat is available
+	setTimeout(function() {
+	  callback(true);
+	}, 1000);
+  },
+  showVendorUI: function() {
+	alert('This is when you need to call your third party provider.');
+  }
+});
+
+// create actionbar instance with pre-defined channels
+new nanorep.sdk.ChannelingBar({
+  rechanneling: [
+	{
+	  actionEsc: '0',
+	  buttonText: 'Phone 1',
+	  channel: '5',
+	  customContent: 'Oh hey, fancy seeing you here!\nSorry, but our phone lines are closed right now.',
+	  description: 'Normal phone',
+	  name: 'Phone',
+	  phoneNumber: '123-456-78910'
+	},
+	{
+	  actionEsc: '0',
+	  buttonText: 'Chat with Me!',
+	  channel: '3',
+	  chatProvider: 'CUSTOM',
+	  description: 'first_custom_chat',
+	  isPopup: false,
+	  name: 'test_CustomChatProvider',
+	  popupSize: '800,600',
+	  providerConfig: 'meta config!',
+	  providerName: 'ThirdPartyProviderName'
+	}
+  ]
+}, document.getElementById('demo-basic'));
+</script>
+</body>
+</html>

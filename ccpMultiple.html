@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>Bold360 AI Multiple Instances of Chat Provider</title>
+</head>
+<body>
+<h1>Custom Chat Provider - Multiple Instances of Chat Provider</h1>
+<script type="text/javascript" src="conf.js"></script>
+<script>
+    //alert('BOLD360_AI_ACCOUNT is ' + BOLD360_AI_ACCOUNT);
+    //alert('BOLD360_AI_DOMAIN is ' + BOLD360_AI_DOMAIN);
+    //alert('BOLD360_AI_KBID is ' + BOLD360_AI_KBID);
+    //alert('BOLD360_AI_CONFIGID is ' + BOLD360_AI_CONFIGID);
+    //alert('BOLD360_AI_APIKEY is ' + BOLD360_AI_APIKEY);
+    //alert('BOLD360_AI_SUPPORT is ' + BOLD360_AI_SUPPORT);
+    var jsScript = "https://" + BOLD360_AI_ACCOUNT + "." + BOLD360_AI_DOMAIN + "/web/include.js?sdk=channeling-bar";
+    document.write('<scr'+'ipt type="text/javascript" src="' + jsScript + '"></scr'+'ipt>');
+</script>
+<p>Demonstrating the Custom Chat Provider, with multiple instances of a provider, that has already been added to this web page.</p>
+<p>Please click ODD SECONDS or EVEN SECONDS below.</p>
+<div id="demo-complex"></div>
+<script>
+nanorep.sdk.addChatProvider('MyMultiChat', {
+  getCapabilities: function() {
+    return {
+      customUI: false,    // indicates that provider support seamless chat integration
+      vendorUI: true,     // indicates that provider supports nativeUI within the page
+      vendorPopup: true   // indicates that provider can open chat in a new window
+    }
+  },
+  getChannelId: function(channel) {
+    // Optional method that controls how many instances of this chat provider can be created
+    // - if it's not defined, it means that only one instance of this chat provider can be created
+    // - if it's defined, it must return a unique key for each instance based on the channel object passed in arguments
+
+    // In this example we allow to create different instances of the chat provider if different configurations are specified
+    return channel.providerName + channel.providerConfig;
+  },
+  constructor: function(channel) {
+    // this function is called to initialize the chat provider instance
+    this.channel = channel;
+    this.providerConfig = JSON.parse(channel.providerConfig);
+    console.log('init custom chat for: \n' + JSON.stringify(channel, null, '  '));
+
+    // emulate fake availability events
+    var self = this;
+    setInterval(function() {
+      self.emit('availabilityChanged', self.isAvailableNow());
+    }, 1000);
+  },
+  isAvailableNow: function() {
+    var isEven = new Date().getSeconds() % 2;
+    return this.providerConfig.type === 'even' ? isEven : !isEven;
+  },
+  isAvailable: function(callback) {
+    callback(this.isAvailableNow());
+  },
+  showVendorUI: function() {
+    alert('activating complex chat "' + this.channel.providerConfig + '" in current page...');
+  },
+  showVendorPopup: function() {
+    alert('activating chat in popup window...');
+  }
+});
+
+// create actionbar instance with predefined channels
+new nanorep.sdk.ChannelingBar({
+  rechanneling: [
+    {
+      actionEsc: '0',
+      buttonText: 'Phone 1',
+      channel: '5',
+      customContent: 'Oh hey, fancy seeing you here!\nSorry, but our phone lines are closed right now.',
+      description: 'Normal phone',
+      name: 'Phone',
+      phoneNumber: '123-456-78910'
+    },
+    {
+      actionEsc: '0',
+      buttonText: 'Odd seconds',
+      channel: '3',
+      chatProvider: 'CUSTOM',
+      description: 'first_custom_chat',
+      isPopup: false,
+      name: 'test_CustomChatProvider',
+      popupSize: '800,600',
+      providerConfig: '{"type": "odd"}',
+      providerName: 'MyMultiChat'
+    },
+    {
+      actionEsc: '0',
+      buttonText: 'Even seconds',
+      channel: '3',
+      chatProvider: 'CUSTOM',
+      description: 'first_custom_chat',
+      isPopup: true,
+      name: 'test_CustomChatProvider',
+      popupSize: '800,600',
+      providerConfig: '{"type": "even"}',
+      providerName: 'MyMultiChat'
+    }
+  ]
+}, document.getElementById('demo-complex'));
+</script>
+</body>
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>Bold360 AI Conversational API</title>
+</head>
+<body>
+<h1>Conversational API</h1>
+<script type="text/javascript" src="conf.js"></script>
+<script>
+    //alert('BOLD360_AI_ACCOUNT is ' + BOLD360_AI_ACCOUNT);
+    //alert('BOLD360_AI_DOMAIN is ' + BOLD360_AI_DOMAIN);
+    //alert('BOLD360_AI_KBID is ' + BOLD360_AI_KBID);
+    //alert('BOLD360_AI_CONFIGID is ' + BOLD360_AI_CONFIGID);
+    //alert('BOLD360_AI_APIKEY is ' + BOLD360_AI_APIKEY);
+    //alert('BOLD360_AI_SUPPORT is ' + BOLD360_AI_SUPPORT);
+    var jsScript = "https://" + BOLD360_AI_ACCOUNT + "." + BOLD360_AI_DOMAIN + "/web/include.js?api=conversation";
+    document.write('<scr'+'ipt type="text/javascript" src="' + jsScript + '"></scr'+'ipt>');
+</script>
+<p>Demonstrating the conversational API, as a basic chat using nanorep.api.conversation, that has already been added to this web page.</p>
+<p>In this demo code, we have created some entities, one of which is BALANCE_TYPE with a value of -1.  Please create an article in your knowledge base that contains
+<strong>[[BALANCE_TYPE]]</strong> in its Content, add a phrasing such as <strong>money</strong>, and publish your article.  Then, enter <strong>money</strong> 
+in this form, and click the Send button.  You should see -1 as an answer.</p>
+  <div class="demo">
+    <div class="source">
+      <div id="demo">
+        <!-- chat form -->
+        <form id="demo-chat" onsubmit="return DemoApp.addStatement({ statement: userInput.value }), false">
+          <div id="demo-log"></div>
+          <div id="demo-quick-options"></div>
+          <div id="demo-input">
+            <input id="userInput" autocomplete="off" required type="text" placeholder="Enter your statement/query..."><button type="submit">Send</button>
+          </div>
+        </form>
+      </div>
+      <style>
+        #demo {
+          width: 300px;
+        }
+        #demo-config input {
+          display: block;
+          margin: 5px 0;
+        }
+        #demo-log {
+          background: #ebf3f6;
+          border: 1px solid #ccc;
+          height: 320px;
+          overflow: scroll;
+          overflow-x: hidden;
+          padding: 20px 0;
+          margin: 0 0 5px;
+        }
+        #demo-log .bubble {
+          border-radius: 5px;
+          padding: 10px;
+          background: #fff;
+          margin: 5px;
+          float: left;
+          clear: both;
+        }
+        #demo-log .bubble > p {
+          margin: 10px 0;
+        }
+        #demo-log .bubble-user {
+          background: #c8e2f2;
+          float: right;
+        }
+        #demo-quick-options {
+          text-align: center;
+          padding: 5px 0;
+        }
+        #demo-chat {
+          display: none;
+        }
+        #userInput {
+          width: 200px;
+        }
+        #demo-input [type="submit"] {
+          margin: 0 0 0 4px;
+          width: 50px;
+        }
+      </style>
+      <script>
+        //example chat app that consumes APIs
+        var DemoApp = {
+          init: function() {
+            //save references to UI elements
+            this.settingsView = document.getElementById('demo-config');
+            this.chatView = document.getElementById('demo-chat');
+            this.chatLog = document.getElementById('demo-log');
+            this.chatInput = document.getElementById('userInput');
+            this.quickOptions = document.getElementById('demo-quick-options');
+            return this;
+          },
+          start: function(host, account, kb) {
+            //initialize Web SDK
+            nanorep.api.init({
+              enableJSONPProxy: true,
+              host: host,
+              account: account,
+              kb: kb
+            });
+
+            //process external entities (optional)
+            nanorep.api.conversation.registerClientEntities({
+              SUBSCRIBERS: function(response) {
+                //return data synchronously
+                return {
+                  "kind": "SUBSCRIBERS",
+                  "type": "number",
+                  "value": "3",
+                  "lifecycle": "persistent",
+                  "confidence": 1,
+                  "properties": [{
+                    "kind": "SUBSCRIBER",
+                    "type": "number",
+                    "value": "50123456789",
+                    "name": "50123456789",
+                    "properties": [{ "kind": "ID", "type": "number", "value": "50123456789" }]
+                  }, {
+                    "kind": "SUBSCRIBER",
+                    "type": "number",
+                    "value": "5011111111",
+                    "name": "5011111111",
+                    "properties": [{ "kind": "ID", "type": "number", "value": "5011111111" }]
+                  }, {
+                    "kind": "SUBSCRIBER",
+                    "type": "number",
+                    "value": "5222222222",
+                    "name": "5222222222",
+                    "properties": [{ "kind": "ID", "type": "number", "value": "5222222222" }]
+                  }]
+                };
+              },
+              BALANCE_TYPE: function() {
+                //async Promises are also supported
+                return Promise.resolve({
+                  "kind": "BALANCE_TYPE",
+                  "type": "number",
+                  "value": "-1"
+                });
+              }
+            });
+
+            //process client side API calls
+            nanorep.api.conversation.registerClientMethods({
+              getBalance: function(subscriberId, balanceType) {
+                //sync return and async Promises are supported
+                switch (subscriberId) {
+                  case 50123456789: return '$1200 ' + balanceType;
+                  case 5011111111: return '$0.99 ' + balanceType;
+                  case 5222222222: return '$7 ' + balanceType;
+                  default: return 'hidden';
+                }
+              }
+            });
+
+            //update UI
+            //this.settingsView.style.display = 'none';
+            this.chatView.style.display = 'block';
+            this.chatInput.focus();
+          },
+          initConversation: function() {
+            //create conversation (if not created yet)
+            var self = this;
+            if (!this.initRequest) {
+              this.initRequest = nanorep.api.conversation.create().then(function(response) {
+                self.conversationId = response.id;
+              });
+            }
+            return this.initRequest;
+          },
+          addStatement: function(message, customText) {
+            //send visitor message using current conversationId
+            var self = this;
+            this.initConversation().then(function() {
+              nanorep.api.conversation.addStatement({
+                id: self.conversationId,
+                statement: message.statement || null,
+                postback: message.postback || null
+              }).then(function(response) {
+                setTimeout(function() {
+                  self.addChatMessage(response);
+                }, 500);
+              });
+            });
+
+            //update UI
+            this.addChatMessage({ text: customText || message.statement }, true);
+            this.chatInput.value = '';
+          },
+          addChatMessage: function(message, fromUser) {
+            //create UI to display message
+            var bubble = document.createElement('div');
+            bubble.className = 'bubble' + (fromUser ? ' bubble-user' : '');
+            if (fromUser) {
+              bubble.appendChild(document.createTextNode(message.text))
+            } else {
+              bubble.innerHTML = message.text;
+            }
+
+            //append chat message to conversation log
+            this.chatLog.appendChild(bubble);
+            this.chatLog.scrollTop = this.chatLog.scrollHeight - this.chatLog.offsetHeight;
+
+            //append persistent buttons (if any)
+            for (var i = 0; message.persistentOptions && i < message.persistentOptions.length; i++) {
+              bubble.appendChild(this.createButton(message.persistentOptions[i]));
+            }
+
+            //update quick options
+            this.showQuickOptions(message.quickOptions);
+          },
+          removeQuickOptions: function() {
+            this.quickOptions.innerHTML = '';
+          },
+          showQuickOptions: function(options) {
+            this.removeQuickOptions();
+
+            for (var i = 0; options && i < options.length; i++) {
+              this.quickOptions.appendChild(this.createButton(options[i]), true);
+            }
+          },
+          handleButtonClick: function(action) {
+            switch (action.type) {
+              //open URLs in new window to keep conversation active
+              case 'url':
+                window.open(action.url);
+                break;
+
+              case 'postback':
+                //process regular postback action
+                this.addStatement({ postback: action.postback }, action.text);
+                break;
+
+              //send statements as text by default if choice type is unrecognized
+              default:
+                this.sendMessage(action.text);
+            }
+          },
+          createButton: function(action, isQuickOption) {
+            var button = document.createElement('button'),
+                self = this;
+
+            button.appendChild(document.createTextNode(action.text));
+            button.setAttribute('type', 'button');
+            button.onclick = function() {
+              if (isQuickOption) {
+                self.removeQuickOptions();
+              }
+              self.handleButtonClick(action);
+            };
+
+            return button;
+          }
+        }.init();
+        DemoApp.start(BOLD360_AI_ACCOUNT + "." + BOLD360_AI_DOMAIN, BOLD360_AI_ACCOUNT, BOLD360_AI_KBID);
+      </script>
+    </div>
+  </div>
+</body>
+</html>

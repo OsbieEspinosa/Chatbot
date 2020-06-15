@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>Bold360 AI Embedded Search Widget</title>
+</head>
+<body>
+<h1>Embedded Search Widget</h1>
+<script type="text/javascript" src="conf.js"></script>
+<script>
+    //alert('BOLD360_AI_ACCOUNT is ' + BOLD360_AI_ACCOUNT);
+    //alert('BOLD360_AI_DOMAIN is ' + BOLD360_AI_DOMAIN);
+    //alert('BOLD360_AI_KBID is ' + BOLD360_AI_KBID);
+    //alert('BOLD360_AI_CONFIGID is ' + BOLD360_AI_CONFIGID);
+    !function(t, e, o, c, n, a) {
+        var s = window.nanorep = window.nanorep || {};
+        s = s[e] = s[e] || {}, s.apiHost = a, s.host = n, s.path = c, s.account = t, s.protocol = "https:" === location.protocol ? "https:" : "http:", s.on = s.on || function() {
+            s._calls = s._calls || [], s._calls.push([].slice.call(arguments))
+        };
+        var p = s.protocol + "//" + n + c + o + "?account=" + t, el = document.createElement("script");
+        el.async = el.defer = !0, el.setAttribute("src", p), document.getElementsByTagName("head")[0].appendChild(el)
+    }(BOLD360_AI_ACCOUNT, "embeddedWidget", "embedded-widget.js", "/web/", BOLD360_AI_ACCOUNT + '.' + BOLD360_AI_DOMAIN);
+            
+    nanorep.embeddedWidget.on({
+        init: function() {
+            //alert('setting KB');
+            nanorep.embeddedWidget.enableLogging();
+            this.setKB(BOLD360_AI_KBID);
+            this.setConfigId(BOLD360_AI_CONFIGID);
+        }
+    });
+</script>
+<p>Demonstrating the embedded search widget (embeddedWidget) that has already been added to this web page.  Click a button or enter text in the textbox.</p>
+<div id="nanorep-embedded-widget"></div>
+<h2>Ask</h2>
+<button onclick="RunEmbeddedSearchAsk('please help?');" class="button">Ask a question in the embeddedWidget</button>
+<h2>Focus</h2>
+<p>
+Notice when you focus on the embeddedWidget, the cursor appears where the user can enter text, and when you focus away, the cursor leaves.
+<div id="notEmbeddedWidget"></div>
+<button onclick="$('#notEmbeddedWidget').get(0).focus();" class="button">Focus away from the embeddedWidget</button>
+<button onclick="nanorep.embeddedWidget.focus();" class="button">Focus on the embeddedWidget</button>
+</p>
+</body>
+<!-- jQuery CDN - Slim version (=without AJAX) -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>   
+<script>
+    $(document).ready(function () {
+        //alert('In .ready');
+    })
+
+    function RunEmbeddedSearchAsk(queryText) {
+        //alert('RunEmbeddedSearchAsk called');
+        nanorep.embeddedWidget.ask('please help?');
+    }
+</script>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>Bold360 AI Seamless Chat with Fake Agent #2</title>
+</head>
+<body>
+<h1>Custom Chat Provider - Seamless Chat with Fake Agent #2</h1>
+<script type="text/javascript" src="conf.js"></script>
+<script>
+    //alert('BOLD360_AI_ACCOUNT is ' + BOLD360_AI_ACCOUNT);
+    //alert('BOLD360_AI_DOMAIN is ' + BOLD360_AI_DOMAIN);
+    //alert('BOLD360_AI_KBID is ' + BOLD360_AI_KBID);
+    //alert('BOLD360_AI_CONFIGID is ' + BOLD360_AI_CONFIGID);
+    //alert('BOLD360_AI_APIKEY is ' + BOLD360_AI_APIKEY);
+    //alert('BOLD360_AI_SUPPORT is ' + BOLD360_AI_SUPPORT);
+    !function(t, e, o, c, n, a) {
+        var s = window.nanorep = window.nanorep || {};
+        s = s[e] = s[e] || {}, s.apiHost = a, s.host = n, s.path = c, s.account = t, s.protocol = "https:" === location.protocol ? "https:" : "http:", s.on = s.on || function() {
+            s._calls = s._calls || [], s._calls.push([].slice.call(arguments))
+        };
+        var p = s.protocol + "//" + n + c + o + "?account=" + t, el = document.createElement("script");
+        el.async = el.defer = !0, el.setAttribute("src", p), document.getElementsByTagName("head")[0].appendChild(el)
+    }(BOLD360_AI_ACCOUNT, "floatingWidget", "floating-widget.js", "/web/", BOLD360_AI_ACCOUNT + '.' + BOLD360_AI_DOMAIN);
+</script>
+<p>Demonstrating the Custom Chat Provider with the floatingWidget escalated to a fake agent.</p>
+<p>The widget automatically displays when this page opens, and random numbers appear as if an agent was typing.</p>
+<script>
+nanorep.floatingWidget.on('init', function() {
+
+	this.setKB(BOLD360_AI_KBID);
+	
+	this.addChatProvider('MyChat', {
+	  getCapabilities: function() {
+		return {
+		  customUI: true,   
+		  vendorUI: false,     
+		  vendorPopup: false  
+		}
+	  },
+	  constructor: function(channel) {
+		//console.log('init chat:', channel);
+	  },
+	  isAvailable: function(callback) {
+		  setTimeout(function() {
+			 callback(true);
+		  }, 1000);
+	  },
+	  requestChat: function() {
+		var self = this;
+		this.emit('newMessage', { text : 'Hello there!' });
+		this.emit('agentTyping', true);
+		this.rndTimer1 = setInterval(function() {
+            self.emit('newMessage', { text: 'number: ' + Math.random() });
+		  }, 3000); 
+	  },
+	  getAgentName: function(callback) {  
+		callback('Chris');
+	  },
+	  sendMessage: function(message) {  
+		  //console.log('sending user message:', message);  
+	  },
+	  endChat: function() {
+		 clearInterval(this.rndTimer);
+		 this.emit('newStatusMessage', { text: 'Chat ended!'});
+		 this.emit('chatEnded');
+	  },
+	  showVendorUI: function() {
+		//console.log('activating chat in current page...');
+	  }
+	});
+});
+
+const channel = {
+    actionEsc: '0',
+    buttonText: 'Start Chat!',
+    channel: '3',
+    chatProvider: 'CUSTOM',
+    description: 'MyChat',
+    isPopup: false,
+    name: 'Test Custom Chat',
+    popupSize: '800,600',
+    providerConfig: '',
+    providerName: 'MyChat',
+};
+
+nanorep.floatingWidget.on('load', function() {
+	//console.log('switching to custom chat');
+	this.expand();
+	this.escalate(channel);
+});
+</script>
+</body>
+</html>

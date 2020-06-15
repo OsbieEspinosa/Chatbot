@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>Bold360 AI Embedded Support Center Widget</title>
+</head>
+<body>
+<h1>Embedded Support Center Widget</h1>
+<p>Demonstrating the embedded support center widget (supportCenter) that has been added to this web page.</p>
+<div id="nanorep-support-center"></div>
+<script type="text/javascript" src="conf.js"></script>
+<script>
+    //alert('BOLD360_AI_ACCOUNT is ' + BOLD360_AI_ACCOUNT);
+    //alert('BOLD360_AI_DOMAIN is ' + BOLD360_AI_DOMAIN);
+    //alert('BOLD360_AI_KBID is ' + BOLD360_AI_KBID);
+    //alert('BOLD360_AI_SUPPORT is ' + BOLD360_AI_SUPPORT);
+	!function(t, e, o, n, c) {
+		var s = window.nanorep = window.nanorep || {};
+		s = s[e] = s[e] || {}, s.host = c, s.path = n, s.domain = t, s.protocol = "https:" === location.protocol ? "https:" : "http:", s.on = s.on || function() {
+			s._calls = s._calls || [], s._calls.push([].slice.call(arguments))
+		};
+		var a = document.createElement("script");
+		a.async = a.defer = !0, a.setAttribute("src", s.protocol + "//" + c + n + o), document.getElementsByTagName("head")[0].appendChild(a)
+	}(BOLD360_AI_SUPPORT,"supportCenter","support-center.js","/web/",BOLD360_AI_ACCOUNT + '.' + BOLD360_AI_DOMAIN);
+</script>
+<p>The supportCenter should appear above this line.</p>
+</body>
+<!-- jQuery CDN - Slim version (=without AJAX) -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>   
+<script>
+    $(document).ready(function () {
+        //alert('In .ready');
+        nanorep.supportCenter.on({
+            init: function() {
+                nanorep.supportCenter.enableLogging();
+            }
+        });
+    })
+</script>
+</html>

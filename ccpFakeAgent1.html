@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>Bold360 AI Seamless Chat with Fake Agent #1</title>
+</head>
+<body>
+<h1>Custom Chat Provider - Seamless Chat with Fake Agent #1</h1>
+<script type="text/javascript" src="conf.js"></script>
+<script>
+    //alert('BOLD360_AI_ACCOUNT is ' + BOLD360_AI_ACCOUNT);
+    //alert('BOLD360_AI_DOMAIN is ' + BOLD360_AI_DOMAIN);
+    //alert('BOLD360_AI_KBID is ' + BOLD360_AI_KBID);
+    //alert('BOLD360_AI_CONFIGID is ' + BOLD360_AI_CONFIGID);
+    //alert('BOLD360_AI_APIKEY is ' + BOLD360_AI_APIKEY);
+    //alert('BOLD360_AI_SUPPORT is ' + BOLD360_AI_SUPPORT);
+	
+    var jsScript = "https://" + BOLD360_AI_ACCOUNT + "." + BOLD360_AI_DOMAIN + "/web/include.js?sdk=channeling-bar";
+    document.write('<scr'+'ipt type="text/javascript" src="' + jsScript + '"></scr'+'ipt>');
+</script>
+<p>Demonstrating the Custom Chat Provider, with the nanorep.sdk and a fake agent, that has already been added to this web page.</p>
+<p>Please click CUSTOM CHAT UI below.</p>
+<div id="demo-seamless" style="margin-top: 410px;"></div>
+<script>
+nanorep.sdk.init({
+	kb: BOLD360_AI_KBID
+});
+nanorep.sdk.addChatProvider('TestSeamlessUI', {
+  getCapabilities: function() {
+    return {
+      customUI: true,     // indicates that provider support seamless chat integration
+      vendorUI: false,    // indicates that provider supports nativeUI within the page
+      vendorPopup: false  // indicates that provider can open chat in a new window
+    }
+  },
+  constructor: function(channel) {
+    // a place to initialize chat provider instance (executed only once)
+  },
+  isAvailable: function(callback) {
+    // this method is used to report availability
+    // just execute callback with truthy value to indicate that chat is available
+    callback(true);
+  },
+  requestChat: function() {
+    // this method is executed when widget is requesting chat with agent
+    var self = this;
+    setTimeout(function() {
+      // simulate delay to show "waiting for agent..." state
+      self.emit('chatStarted');
+
+      // simulate initial incoming message from agent
+      self.emit('newMessage', { text: 'Hello there! Type anything and I will reply something!' });
+    }, 1000);
+  },
+  setVisitorTyping: function(isTyping) {
+    // this method is executed when visitor starts/stops typing (isTyping is boolean value)
+  },
+  getAgentName: function(callback) {
+    // this method might be executed by widget to retrieve agent name
+    callback('John Doe');
+  },
+  sendMessage: function(message) {
+    // this method is executed by widget when user submits the text (message argument is plain object with "text" property containing user input)
+    var self = this;
+    self.emit('agentTyping', true);
+    setTimeout(function() {
+      // simulate agent typing activity and show agent reply message by emitting "newMessage" event
+      self.emit('agentTyping', false);
+      self.emit('newMessage', { text: 'AGENT REPLY FOR: ' + message.text });
+    }, 1000);
+  },
+  endChat: function() {
+    // this method is executed by widget when user wants to stop chat with agent
+    this.emit('chatEnded'); // provider decides when chat is really terminated (additional confirmation dialogs or post-chat surveys might be shown)
+  }
+});
+
+// create actionbar instance with predefined channels
+new nanorep.sdk.ChannelingBar({
+  rechanneling: [
+    {
+      actionEsc: '0',
+      buttonText: 'Custom Chat UI',
+      channel: '3',
+      chatProvider: 'CUSTOM',
+      description: 'first_custom_chat',
+      isPopup: false,
+      name: 'test_CustomChatProvider',
+      popupSize: '200,200',
+      providerConfig: 'meta config!',
+      providerName: 'TestSeamlessUI'
+    }
+  ]
+}, document.getElementById('demo-seamless'));
+</script>
+</body>
+</html>
