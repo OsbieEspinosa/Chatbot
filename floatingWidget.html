@@ -8,10 +8,10 @@
 <h1>Floating Widget</h1>
 <script type="text/javascript" src="conf.js"></script>
 <script>
-    //alert('BOLD360_AI_ACCOUNT is ' + BOLD360_AI_ACCOUNT);
-    //alert('BOLD360_AI_DOMAIN is ' + BOLD360_AI_DOMAIN);
+    //alert('"compucom" is ' + "compucom");
+    //alert('"compucom.nanorep.co" is ' + "compucom.nanorep.co");
     //alert('BOLD360_AI_KBID is ' + BOLD360_AI_KBID);
-    //alert('BOLD360_AI_CONFIGID is ' + BOLD360_AI_CONFIGID);
+    //alert(''1483958521' is ' + '1483958521');
 	//alert('BOLD360_AI_APIKEY is ' + BOLD360_AI_APIKEY);
     //alert('BOLD360_AI_SUPPORT is ' + BOLD360_AI_SUPPORT);
     !function(t, e, o, c, n, a) {
@@ -21,7 +21,7 @@
         };
         var p = s.protocol + "//" + n + c + o + "?account=" + t, el = document.createElement("script");
         el.async = el.defer = !0, el.setAttribute("src", p), document.getElementsByTagName("head")[0].appendChild(el)
-    }(BOLD360_AI_ACCOUNT, "floatingWidget", "floating-widget.js", "/web/", BOLD360_AI_ACCOUNT + '.' + BOLD360_AI_DOMAIN);
+    }("compucom", "floatingWidget", "floating-widget.js", "/web/", "compucom" + '.' + "compucom.nanorep.co");
 </script>
 <p>Demonstrating the floating widget (floatingWidget) that has already been added to this web page.</p>
 <h2>Ask, Collapse, Expand</h2>
@@ -60,7 +60,7 @@ Notice when you focus on the expanded floatingWidget, the cursor is where the us
     function FloatingWidgetInitHandler() {
         //alert('FloatingWidgetInitHandler called');
         nanorep.floatingWidget.setKB(BOLD360_AI_KBID);
-        nanorep.floatingWidget.setConfigId(BOLD360_AI_CONFIGID);
+        nanorep.floatingWidget.setConfigId('1483958521');
 		nanorep.floatingWidget.setInitializedEntities({
 			userFirstName: 'SampleFirstName',
 			role: 'SampleRole'
