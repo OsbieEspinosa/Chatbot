@@ -1,7 +1,86 @@
 <html>
 	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 	</head>
 	<body>
+		<script type="text/javascript" src="conf.js"></script>
+<script>
+    //alert('BOLD360_AI_ACCOUNT is ' + BOLD360_AI_ACCOUNT);
+    //alert('BOLD360_AI_DOMAIN is ' + BOLD360_AI_DOMAIN);
+    //alert('BOLD360_AI_KBID is ' + BOLD360_AI_KBID);
+    //alert('BOLD360_AI_CONFIGID is ' + BOLD360_AI_CONFIGID);
+	//alert('BOLD360_AI_APIKEY is ' + BOLD360_AI_APIKEY);
+    //alert('BOLD360_AI_SUPPORT is ' + BOLD360_AI_SUPPORT);
+    !function(t, e, o, c, n, a) {
+        var s = window.nanorep = window.nanorep || {};
+        s = s[e] = s[e] || {}, s.apiHost = a, s.host = n, s.path = c, s.account = t, s.protocol = "https:" === location.protocol ? "https:" : "http:", s.on = s.on || function() {
+            s._calls = s._calls || [], s._calls.push([].slice.call(arguments))
+        };
+        var p = s.protocol + "//" + n + c + o + "?account=" + t, el = document.createElement("script");
+        el.async = el.defer = !0, el.setAttribute("src", p), document.getElementsByTagName("head")[0].appendChild(el)
+    }(BOLD360_AI_ACCOUNT, "floatingWidget", "floating-widget.js", "/web/", BOLD360_AI_ACCOUNT + '.' + BOLD360_AI_DOMAIN);
+</script>
+<p>Demonstrating the floating widget (floatingWidget) that has already been added to this web page.</p>
+<h2>Ask, Collapse, Expand</h2>
+<ol>
+  <li>Please click the Ask a question... button.  Notice that it acts as if you typed a question, then searches the knowledge base for a matching phrasing.</li>
+  <li>In this demo code, we have created some entities, one of which is userFirstName.  Please create an article in your knowledge base that contains
+<strong>[[userFirstName]]</strong> in its Content, add a phrasing such as <strong>user</strong>, and publish your article.  Then, enter <strong>user</strong> in
+the widget, and press the Enter key on your keyboard.  You should see SampleFirstName as an answer.</li>
+</ol>
+<button onclick="RunFloatingAsk('please help?');" class="button">Ask a question in the floatingWidget, and expand the widget</button>
+<button onclick="CollapseFloating();" class="button">Collapse the floatingWidget</button>
+<button onclick="ExpandFloating();" class="button">Expand the floatingWidget</button>
+<h2>Focus</h2>
+<p>
+Notice when you focus on the expanded floatingWidget, the cursor is where the user can enter text, and when you focus away, the cursor leaves.
+<div id="notFloatingWidget"></div>
+<button onclick="$('#notFloatingWidget').get(0).focus();" class="button">Focus away from the floatingWidget</button>
+<button onclick="nanorep.floatingWidget.focus();" class="button">Focus on the floatingWidget</button>
+</p>
+</body>
+<!-- jQuery CDN - Slim version (=without AJAX) -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>   
+<script>
+    $(document).ready(function () {
+        //alert('In .ready');
+        nanorep.floatingWidget.on('init', FloatingWidgetInitHandler);
+        nanorep.floatingWidget.on('load', FloatingWidgetLoadHandler);
+    })
+
+    function RunFloatingAsk(queryText) {
+        //alert('RunFloatingAsk called');
+        nanorep.floatingWidget.ask('please help?');
+        nanorep.floatingWidget.expand();
+    }
+    
+    function FloatingWidgetInitHandler() {
+        //alert('FloatingWidgetInitHandler called');
+        nanorep.floatingWidget.setKB(BOLD360_AI_KBID);
+        nanorep.floatingWidget.setConfigId(BOLD360_AI_CONFIGID);
+		nanorep.floatingWidget.setInitializedEntities({
+			userFirstName: 'SampleFirstName',
+			role: 'SampleRole'
+		});
+        nanorep.floatingWidget.enableLogging();
+    }
+    
+    function FloatingWidgetLoadHandler() {
+        //alert('FloatingWidgetLoadHandler called');
+        nanorep.floatingWidget.displayHeaderButtons({ close: false }); //These parameters do not appear to work:  minimize: false, expand: false
+        nanorep.floatingWidget.collapse(); //needed in case the user has refreshed the page with the widget expanded, because we want to start collapsed
+        //    alert('switching to custom chat');
+        //    this.escalate(channel); -->
+    }
+    
+    function CollapseFloating() {
+        nanorep.floatingWidget.collapse();
+    }
+
+    function ExpandFloating() {
+        nanorep.floatingWidget.expand();
+    }
+</script>
 	<p>Test</p>
 <!-- nanorep floating widget -->
 <script>!function(t,e,o,c,n,a){var s=window.nanorep=window.nanorep||{};s=s[e]=s[e]||{},s.apiHost=a,s.host=n,s.path=c,s.account=t,s.protocol="https:",s.on=s.on||function(){s._calls=s._calls||[],s._calls.push([].slice.call(arguments))};var p=s.protocol+"//"+n+c+o+"?account="+t,l=document.createElement("script");l.async=l.defer=!0,l.setAttribute("src",p),document.getElementsByTagName("head")[0].appendChild(l)}("compucom","floatingWidget","floating-widget.js","/web/","compucom.nanorep.co");</script>
